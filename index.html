@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Street Labs AgTech AI Intelligence Dashboard - Comprehensive agricultural technology market intelligence and innovation tracking">
+    <meta name="author" content="Street Labs">
+    <meta name="keywords" content="AgTech, Agriculture, AI, Street Labs, Market Intelligence, Innovation">
     <title>Street Labs - AgTech AI Intelligence Dashboard</title>
-    <meta name="description" content="Comprehensive AgTech market intelligence and analytics platform by Street Labs">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
@@ -13,17 +15,15 @@
     <header>
         <div class="container">
             <div class="header-content">
-                <div class="brand-section">
-                    <div class="street-labs-logo">
-                        <span class="logo-icon">🛣️</span>
-                        <span class="logo-text">Street Labs</span>
+                <div class="logo-section">
+                    <img src="https://www.street.app/street-logo.png" alt="Street Labs Logo" class="street-logo" onerror="this.style.display='none'">
+                    <div class="header-text">
+                        <h1>Street Labs</h1>
+                        <p class="subtitle">AgTech AI Intelligence Dashboard</p>
                     </div>
-                    <div class="header-divider"></div>
-                    <h1>🌾 AgTech AI Intelligence Dashboard</h1>
                 </div>
                 <div class="header-tagline">
-                    <p class="subtitle">Comprehensive Agricultural Technology Market Intelligence & Innovation Tracking</p>
-                    <p class="powered-by">Powered by <a href="https://street.app" target="_blank" class="street-link">street.app</a></p>
+                    <p>Comprehensive Agricultural Technology Market Intelligence</p>
                 </div>
             </div>
         </div>
@@ -90,37 +90,37 @@
             <div class="container">
                 <h2>Company Landscape</h2>
                 
-                <!-- Search and Filter Controls -->
-                <div class="controls-section">
+                <!-- Company Navigation Controls -->
+                <div class="company-controls">
                     <div class="search-container">
-                        <input type="text" id="searchInput" placeholder="🔍 Search companies by name, technology, or location..." class="search-input">
+                        <input type="text" id="companySearch" placeholder="🔍 Search companies by name, technology, or location..." class="search-input">
                     </div>
                     
                     <div class="filter-controls">
                         <div class="filter-group">
                             <label for="categoryFilter">Category:</label>
                             <select id="categoryFilter" class="filter-select">
-                                <option value="all">All Categories</option>
+                                <option value="">All Categories</option>
                             </select>
                         </div>
                         
                         <div class="filter-group">
                             <label for="stageFilter">Stage:</label>
                             <select id="stageFilter" class="filter-select">
-                                <option value="all">All Stages</option>
+                                <option value="">All Stages</option>
                             </select>
                         </div>
                         
                         <div class="filter-group">
-                            <label for="countryFilter">Country:</label>
-                            <select id="countryFilter" class="filter-select">
-                                <option value="all">All Countries</option>
+                            <label for="regionFilter">Region:</label>
+                            <select id="regionFilter" class="filter-select">
+                                <option value="">All Regions</option>
                             </select>
                         </div>
                         
                         <div class="filter-group">
-                            <label for="sortSelect">Sort by:</label>
-                            <select id="sortSelect" class="filter-select">
+                            <label for="sortBy">Sort by:</label>
+                            <select id="sortBy" class="filter-select">
                                 <option value="funding-desc">Funding (High to Low)</option>
                                 <option value="funding-asc">Funding (Low to High)</option>
                                 <option value="name-asc">Name (A-Z)</option>
@@ -129,12 +129,10 @@
                                 <option value="year-asc">Founded (Oldest)</option>
                             </select>
                         </div>
-                        
-                        <button id="resetFilters" class="reset-btn">Reset Filters</button>
                     </div>
                     
-                    <div class="results-info">
-                        <span id="resultsCounter" class="results-counter">Showing 1-20 of 108 companies</span>
+                    <div class="company-counter">
+                        <span id="companyCounter">Showing 1-20 of 108 companies</span>
                     </div>
                 </div>
 
@@ -146,13 +144,13 @@
 
                 <div class="company-table-container">
                     <h3>Company Directory</h3>
-                    <div id="companyTable" class="company-table"></div>
+                    <div id="companyTable"></div>
                     
                     <!-- Pagination Controls -->
                     <div class="pagination-controls">
-                        <button id="prevPage" class="pagination-btn" disabled>← Previous</button>
+                        <button id="prevPage" class="page-btn">← Previous</button>
                         <div id="pageNumbers" class="page-numbers"></div>
-                        <button id="nextPage" class="pagination-btn">Next →</button>
+                        <button id="nextPage" class="page-btn">Next →</button>
                     </div>
                 </div>
             </div>
@@ -292,22 +290,19 @@
     <footer>
         <div class="container">
             <div class="footer-content">
-                <div class="footer-brand">
-                    <div class="footer-logo">
-                        <span class="logo-icon">🛣️</span>
-                        <span class="logo-text">Street Labs</span>
+                <div class="footer-branding">
+                    <img src="https://www.street.app/street-logo.png" alt="Street Labs Logo" class="footer-logo" onerror="this.style.display='none'">
+                    <div class="footer-text">
+                        <p class="footer-brand"><strong>Powered by Street Labs</strong></p>
+                        <p class="footer-tagline">Building the future of technology and innovation</p>
                     </div>
-                    <p class="footer-tagline">Building the future of technology intelligence</p>
                 </div>
                 <div class="footer-links">
-                    <a href="https://street.app" target="_blank" class="footer-link">street.app</a>
-                    <a href="https://github.com/StreetFDN" target="_blank" class="footer-link">GitHub</a>
-                    <a href="mailto:contact@street.app" class="footer-link">Contact</a>
+                    <a href="https://www.street.app" target="_blank" rel="noopener noreferrer">street.app</a>
+                    <span class="separator">|</span>
+                    <span>&copy; 2026 Street Labs. All rights reserved.</span>
                 </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2026 Street Labs. All rights reserved.</p>
-                <p class="footer-data">AgTech AI Intelligence Dashboard • Data updated: January 2026 • 108 companies tracked</p>
+                <p class="footer-update">Data updated: January 2026 | 108 companies tracked</p>
             </div>
         </div>
     </footer>

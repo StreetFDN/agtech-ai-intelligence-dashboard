@@ -18,39 +18,9 @@ body {
     padding: 0 20px;
 }
 
-/* Street Labs Branding */
-.street-labs-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.logo-icon {
-    font-size: 2rem;
-}
-
-.logo-text {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: -0.5px;
-}
-
-.street-link {
-    color: #7dd3fc;
-    text-decoration: none;
-    font-weight: 600;
-    transition: color 0.3s ease;
-}
-
-.street-link:hover {
-    color: #38bdf8;
-    text-decoration: underline;
-}
-
-/* Header */
+/* Header with Street Labs Branding */
 header {
-    background: linear-gradient(135deg, #0369a1 0%, #0284c7 50%, #0891b2 100%);
+    background: linear-gradient(135deg, #0066cc 0%, #0099ff 50%, #00cccc 100%);
     color: white;
     padding: 2rem 0;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -58,33 +28,28 @@ header {
 
 .header-content {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
     gap: 1rem;
 }
 
-.brand-section {
+.logo-section {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    flex-wrap: wrap;
 }
 
-.header-divider {
-    width: 2px;
-    height: 40px;
-    background-color: rgba(255, 255, 255, 0.3);
+.street-logo {
+    height: 60px;
+    width: auto;
+    filter: brightness(0) invert(1);
 }
 
-header h1 {
-    font-size: 2rem;
+.header-text h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.3rem;
     font-weight: 700;
-    margin: 0;
-}
-
-.header-tagline {
-    display: flex;
-    flex-direction: column;
-    gap: 0.3rem;
 }
 
 .subtitle {
@@ -93,10 +58,13 @@ header h1 {
     font-weight: 300;
 }
 
-.powered-by {
-    font-size: 0.9rem;
-    opacity: 0.85;
-    font-style: italic;
+.header-tagline {
+    text-align: right;
+    opacity: 0.9;
+}
+
+.header-tagline p {
+    font-size: 1rem;
 }
 
 /* Navigation */
@@ -124,16 +92,16 @@ nav a {
     display: block;
     padding: 1rem 1.5rem;
     text-decoration: none;
-    color: #0369a1;
+    color: #0066cc;
     font-weight: 500;
     transition: all 0.3s ease;
     border-bottom: 3px solid transparent;
 }
 
 nav a:hover {
-    background-color: #f0f9ff;
-    color: #0284c7;
-    border-bottom-color: #0284c7;
+    background-color: #e6f2ff;
+    color: #0099ff;
+    border-bottom-color: #0099ff;
 }
 
 /* Sections */
@@ -147,7 +115,7 @@ nav a:hover {
 
 .section h2 {
     font-size: 2rem;
-    color: #0369a1;
+    color: #0066cc;
     margin-bottom: 2rem;
     text-align: center;
     font-weight: 700;
@@ -155,7 +123,7 @@ nav a:hover {
 
 .section h3 {
     font-size: 1.5rem;
-    color: #0369a1;
+    color: #0066cc;
     margin-bottom: 1.5rem;
     font-weight: 600;
 }
@@ -175,12 +143,12 @@ nav a:hover {
     box-shadow: 0 4px 6px rgba(0,0,0,0.07);
     text-align: center;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-top: 4px solid #0891b2;
+    border-top: 4px solid #0099ff;
 }
 
 .metric-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    box-shadow: 0 8px 15px rgba(0,102,204,0.2);
 }
 
 .metric-icon {
@@ -191,7 +159,7 @@ nav a:hover {
 .metric-value {
     font-size: 2.5rem;
     font-weight: 700;
-    color: #0369a1;
+    color: #0066cc;
     margin-bottom: 0.5rem;
 }
 
@@ -201,8 +169,8 @@ nav a:hover {
     font-weight: 500;
 }
 
-/* Search and Filter Controls */
-.controls-section {
+/* Company Navigation Controls */
+.company-controls {
     background: white;
     padding: 2rem;
     border-radius: 12px;
@@ -225,8 +193,8 @@ nav a:hover {
 
 .search-input:focus {
     outline: none;
-    border-color: #0284c7;
-    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.1);
+    border-color: #0099ff;
+    box-shadow: 0 0 0 3px rgba(0,153,255,0.1);
 }
 
 .filter-controls {
@@ -239,20 +207,20 @@ nav a:hover {
 .filter-group {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 }
 
 .filter-group label {
     font-size: 0.9rem;
     font-weight: 600;
-    color: #0369a1;
+    color: #555;
+    margin-bottom: 0.5rem;
 }
 
 .filter-select {
     padding: 0.75rem;
-    border: 2px solid #e0e0e0;
-    border-radius: 8px;
     font-size: 0.95rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
     background-color: white;
     cursor: pointer;
     transition: border-color 0.3s ease;
@@ -260,35 +228,80 @@ nav a:hover {
 
 .filter-select:focus {
     outline: none;
-    border-color: #0284c7;
+    border-color: #0099ff;
 }
 
-.reset-btn {
-    padding: 0.75rem 1.5rem;
-    background-color: #ef4444;
-    color: white;
-    border: none;
+.company-counter {
+    text-align: center;
+    font-size: 1rem;
+    color: #666;
+    font-weight: 500;
+    padding: 0.5rem;
+    background-color: #f0f8ff;
+    border-radius: 6px;
+}
+
+/* Pagination Controls */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: white;
     border-radius: 8px;
+}
+
+.page-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    color: white;
+    background: linear-gradient(135deg, #0066cc, #0099ff);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.page-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,102,204,0.3);
+}
+
+.page-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.page-numbers {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.page-number {
+    padding: 0.5rem 1rem;
     font-size: 0.95rem;
     font-weight: 600;
+    color: #0066cc;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
-    align-self: flex-end;
+    transition: all 0.3s ease;
 }
 
-.reset-btn:hover {
-    background-color: #dc2626;
+.page-number:hover {
+    background: #e6f2ff;
+    border-color: #0099ff;
 }
 
-.results-info {
-    padding-top: 1rem;
-    border-top: 1px solid #e0e0e0;
-}
-
-.results-counter {
-    font-size: 1rem;
-    color: #0369a1;
-    font-weight: 600;
+.page-number.active {
+    background: linear-gradient(135deg, #0066cc, #0099ff);
+    color: white;
+    border-color: #0066cc;
 }
 
 /* Chart Containers */
@@ -338,19 +351,19 @@ canvas {
     padding: 2rem;
     border-radius: 12px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.07);
-    border-left: 4px solid #0891b2;
+    border-left: 4px solid #0099ff;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .tech-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.15);
-    border-left-color: #0369a1;
+    box-shadow: 0 8px 15px rgba(0,102,204,0.2);
+    border-left-color: #0066cc;
 }
 
 .tech-card h4 {
     font-size: 1.3rem;
-    color: #0369a1;
+    color: #0066cc;
     margin-bottom: 1rem;
 }
 
@@ -362,8 +375,8 @@ canvas {
 
 .tech-count {
     display: inline-block;
-    background: #e0f2fe;
-    color: #0369a1;
+    background: linear-gradient(135deg, #e6f2ff, #ccebff);
+    color: #0066cc;
     padding: 0.3rem 0.8rem;
     border-radius: 20px;
     font-size: 0.9rem;
@@ -376,6 +389,7 @@ canvas {
 }
 
 .company-table {
+    width: 100%;
     background: white;
     border-radius: 12px;
     overflow: hidden;
@@ -395,7 +409,7 @@ canvas {
 }
 
 .company-table th {
-    background-color: #0369a1;
+    background: linear-gradient(135deg, #0066cc, #0099ff);
     color: white;
     font-weight: 600;
     position: sticky;
@@ -403,7 +417,7 @@ canvas {
 }
 
 .company-table tr:hover {
-    background-color: #f0f9ff;
+    background-color: #f0f8ff;
 }
 
 .company-table tr:last-child td {
@@ -412,184 +426,144 @@ canvas {
 
 .company-name {
     font-weight: 600;
-    color: #0369a1;
+    color: #0066cc;
 }
 
-.company-tech {
-    font-size: 0.9rem;
-    color: #666;
+.company-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem;
 }
 
-.funding-badge {
+.tag {
     display: inline-block;
-    padding: 0.25rem 0.75rem;
-    border-radius: 20px;
+    padding: 0.2rem 0.6rem;
+    background: #e6f2ff;
+    color: #0066cc;
+    border-radius: 12px;
+    font-size: 0.8rem;
+}
+
+.status-badge {
+    padding: 0.3rem 0.7rem;
+    border-radius: 12px;
     font-size: 0.85rem;
     font-weight: 600;
 }
 
-.stage-seed { background-color: #dbeafe; color: #1e40af; }
-.stage-series-a { background-color: #d1fae5; color: #065f46; }
-.stage-series-b { background-color: #fef3c7; color: #92400e; }
-.stage-series-c { background-color: #fed7aa; color: #9a3412; }
-.stage-series-d { background-color: #fecaca; color: #991b1b; }
-.stage-series-e { background-color: #e9d5ff; color: #6b21a8; }
-.stage-public { background-color: #bfdbfe; color: #1e3a8a; }
-.stage-acquired { background-color: #d1d5db; color: #374151; }
-.stage-corporate { background-color: #c7d2fe; color: #3730a3; }
-
-/* Pagination Controls */
-.pagination-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 2rem;
-    padding: 1.5rem;
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+.status-active {
+    background: #d4edda;
+    color: #155724;
 }
 
-.pagination-btn {
-    padding: 0.75rem 1.5rem;
-    background-color: #0284c7;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+.status-acquired {
+    background: #fff3cd;
+    color: #856404;
 }
 
-.pagination-btn:hover:not(:disabled) {
-    background-color: #0369a1;
+.status-public {
+    background: #cce5ff;
+    color: #004085;
 }
 
-.pagination-btn:disabled {
-    background-color: #cbd5e1;
-    cursor: not-allowed;
-}
-
-.page-numbers {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.page-number {
-    padding: 0.5rem 0.75rem;
-    background-color: white;
-    color: #0369a1;
-    border: 2px solid #e0e0e0;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.page-number:hover {
-    background-color: #e0f2fe;
-    border-color: #0284c7;
-}
-
-.page-number.active {
-    background-color: #0284c7;
-    color: white;
-    border-color: #0284c7;
-}
-
-/* Footer */
+/* Footer with Street Labs Branding */
 footer {
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    background: linear-gradient(135deg, #0066cc 0%, #0099ff 50%, #00cccc 100%);
     color: white;
-    padding: 3rem 0 1.5rem;
+    text-align: center;
+    padding: 2.5rem 0;
     margin-top: 3rem;
 }
 
 .footer-content {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    padding-bottom: 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    flex-wrap: wrap;
-    gap: 2rem;
+    gap: 1rem;
 }
 
-.footer-brand {
+.footer-branding {
     display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
 }
 
 .footer-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+    height: 40px;
+    width: auto;
+    filter: brightness(0) invert(1);
 }
 
-.footer-logo .logo-text {
-    font-size: 1.5rem;
+.footer-text {
+    text-align: left;
+}
+
+.footer-brand {
+    font-size: 1.2rem;
+    margin-bottom: 0.2rem;
 }
 
 .footer-tagline {
-    font-size: 0.95rem;
-    opacity: 0.8;
+    font-size: 0.9rem;
+    opacity: 0.9;
 }
 
 .footer-links {
     display: flex;
-    gap: 2rem;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.95rem;
 }
 
-.footer-link {
-    color: #7dd3fc;
+.footer-links a {
+    color: white;
     text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
+    font-weight: 600;
+    transition: opacity 0.3s ease;
 }
 
-.footer-link:hover {
-    color: #38bdf8;
+.footer-links a:hover {
+    opacity: 0.8;
     text-decoration: underline;
 }
 
-.footer-bottom {
-    padding-top: 2rem;
-    text-align: center;
-}
-
-.footer-bottom p {
-    margin: 0.5rem 0;
-    opacity: 0.8;
-    font-size: 0.9rem;
-}
-
-.footer-data {
-    font-size: 0.85rem;
+.separator {
     opacity: 0.6;
+}
+
+.footer-update {
+    font-size: 0.85rem;
+    opacity: 0.8;
+    margin-top: 0.5rem;
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
-    .brand-section {
+    .header-content {
         flex-direction: column;
-        align-items: flex-start;
+        text-align: center;
+    }
+
+    .logo-section {
+        flex-direction: column;
         gap: 1rem;
     }
 
-    .header-divider {
-        display: none;
+    .street-logo {
+        height: 50px;
     }
 
-    header h1 {
-        font-size: 1.5rem;
+    .header-text h1 {
+        font-size: 1.8rem;
     }
 
     .subtitle {
         font-size: 0.9rem;
+    }
+
+    .header-tagline {
+        text-align: center;
     }
 
     nav ul {
@@ -610,8 +584,13 @@ footer {
         grid-template-columns: 1fr;
     }
 
-    .reset-btn {
-        align-self: stretch;
+    .pagination-controls {
+        flex-direction: column;
+    }
+
+    .page-numbers {
+        flex-wrap: wrap;
+        justify-content: center;
     }
 
     .metric-value {
@@ -631,18 +610,17 @@ footer {
         overflow-x: auto;
     }
 
-    .pagination-controls {
+    .footer-branding {
         flex-direction: column;
     }
 
-    .footer-content {
-        flex-direction: column;
-        align-items: flex-start;
+    .footer-text {
+        text-align: center;
     }
 
     .footer-links {
         flex-direction: column;
-        gap: 1rem;
+        gap: 0.5rem;
     }
 }
 
@@ -680,27 +658,10 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #0284c7;
+    background: #0066cc;
     border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #0369a1;
-}
-
-/* Empty State */
-.empty-state {
-    text-align: center;
-    padding: 3rem;
-    color: #666;
-}
-
-.empty-state-icon {
-    font-size: 4rem;
-    margin-bottom: 1rem;
-}
-
-.empty-state-text {
-    font-size: 1.2rem;
-    font-weight: 600;
+    background: #0099ff;
 }
