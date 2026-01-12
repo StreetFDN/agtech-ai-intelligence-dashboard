@@ -39,7 +39,7 @@
                 <div class="metrics-grid">
                     <div class="metric-card">
                         <div class="metric-icon">🏢</div>
-                        <div class="metric-value" id="companiesCount">63+</div>
+                        <div class="metric-value" id="companiesCount">108</div>
                         <div class="metric-label">Companies Tracked</div>
                     </div>
                     <div class="metric-card">
@@ -53,8 +53,8 @@
                         <div class="metric-label">GitHub Repositories</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-icon">📊</div>
-                        <div class="metric-value" id="totalFunding">$12.4B</div>
+                        <div class="metric-icon">📈</div>
+                        <div class="metric-value" id="totalFunding">$18.7B</div>
                         <div class="metric-label">Total Funding</div>
                     </div>
                 </div>
@@ -76,15 +76,74 @@
         <section id="companies" class="section section-alt">
             <div class="container">
                 <h2>Company Landscape</h2>
+                
+                <!-- Company Search and Filters -->
+                <div class="company-controls">
+                    <div class="search-bar">
+                        <input type="text" id="companySearch" placeholder="🔍 Search companies by name, technology, or location...">
+                    </div>
+                    
+                    <div class="filter-controls">
+                        <div class="filter-group">
+                            <label for="categoryFilter">Category:</label>
+                            <select id="categoryFilter">
+                                <option value="all">All Categories</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="stageFilter">Stage:</label>
+                            <select id="stageFilter">
+                                <option value="all">All Stages</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="countryFilter">Country:</label>
+                            <select id="countryFilter">
+                                <option value="all">All Countries</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="sortBy">Sort By:</label>
+                            <select id="sortBy">
+                                <option value="funding-desc">Funding (High to Low)</option>
+                                <option value="funding-asc">Funding (Low to High)</option>
+                                <option value="name-asc">Name (A-Z)</option>
+                                <option value="name-desc">Name (Z-A)</option>
+                                <option value="founded-desc">Newest First</option>
+                                <option value="founded-asc">Oldest First</option>
+                            </select>
+                        </div>
+                        
+                        <button id="resetFilters" class="btn-reset">Reset Filters</button>
+                    </div>
+                </div>
+
                 <div class="chart-container-full">
                     <h3>Company Funding Analysis (Bubble Chart)</h3>
                     <p class="chart-description">Size represents total funding amount, color represents funding stage</p>
                     <canvas id="fundingBubbleChart"></canvas>
                 </div>
 
+                <!-- Company Results Counter -->
+                <div class="results-info">
+                    <p id="resultsCounter">Showing 1-20 of 108 companies</p>
+                </div>
+
+                <!-- Company Table -->
                 <div class="company-table-container">
-                    <h3>Top Companies by Funding</h3>
                     <div id="companyTable"></div>
+                </div>
+
+                <!-- Pagination Controls -->
+                <div class="pagination-controls" id="paginationControls">
+                    <button id="firstPage" class="pagination-btn">First</button>
+                    <button id="prevPage" class="pagination-btn">Previous</button>
+                    <div class="page-numbers" id="pageNumbers"></div>
+                    <button id="nextPage" class="pagination-btn">Next</button>
+                    <button id="lastPage" class="pagination-btn">Last</button>
                 </div>
             </div>
         </section>
@@ -97,32 +156,32 @@
                     <div class="tech-card">
                         <h4>🤖 AI & Machine Learning</h4>
                         <p>Computer vision, predictive analytics, crop disease detection, yield prediction</p>
-                        <span class="tech-count">24 companies</span>
+                        <span class="tech-count">32 companies</span>
                     </div>
                     <div class="tech-card">
                         <h4>🛰️ Precision Agriculture</h4>
                         <p>IoT sensors, drone monitoring, satellite imaging, field mapping</p>
-                        <span class="tech-count">18 companies</span>
+                        <span class="tech-count">24 companies</span>
                     </div>
                     <div class="tech-card">
                         <h4>🌱 Crop Management</h4>
                         <p>Smart irrigation, soil analysis, pest control, fertilizer optimization</p>
-                        <span class="tech-count">16 companies</span>
+                        <span class="tech-count">18 companies</span>
                     </div>
                     <div class="tech-card">
                         <h4>🚜 Farm Automation</h4>
                         <p>Autonomous tractors, robotic harvesting, automated logistics</p>
-                        <span class="tech-count">12 companies</span>
+                        <span class="tech-count">15 companies</span>
                     </div>
                     <div class="tech-card">
                         <h4>📊 Data Analytics</h4>
                         <p>Farm management software, supply chain optimization, market intelligence</p>
-                        <span class="tech-count">15 companies</span>
+                        <span class="tech-count">16 companies</span>
                     </div>
                     <div class="tech-card">
                         <h4>🔬 Biotechnology</h4>
                         <p>Gene editing, plant breeding, microbial solutions, synthetic biology</p>
-                        <span class="tech-count">10 companies</span>
+                        <span class="tech-count">12 companies</span>
                     </div>
                 </div>
             </div>

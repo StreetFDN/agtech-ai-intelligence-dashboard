@@ -1,5 +1,9 @@
-// Load data and initialize dashboard
+// Global variables
 let dashboardData = null;
+let allCompanies = [];
+let filteredCompanies = [];
+let currentPage = 1;
+const companiesPerPage = 20;
 
 // Smooth scrolling for navigation
 document.querySelectorAll('.nav-link').forEach(link => {
@@ -18,18 +22,19 @@ fetch('data.json')
     .then(response => response.json())
     .then(data => {
         dashboardData = data;
+        allCompanies = data.companies || [];
+        filteredCompanies = [...allCompanies];
         initializeDashboard();
     })
     .catch(error => {
         console.error('Error loading data:', error);
-        initializeDashboard(); // Initialize with default data if fetch fails
+        initializeDashboard();
     });
 
 function initializeDashboard() {
-    // Update metrics
     updateMetrics();
-    
-    // Initialize all charts
+    initializeFilters();
+    setupEventListeners();
     createTechnologyCategoryChart();
     createGeographicDistributionChart();
     createFundingBubbleChart();
@@ -38,31 +43,294 @@ function initializeDashboard() {
     createQuarterlyFundingChart();
     createGitHubReposChart();
     createPatentCategoryChart();
-    createCompanyTable();
+    displayCompanies();
 }
 
 function updateMetrics() {
-    // Metrics are already in HTML, but can be updated dynamically if needed
     if (dashboardData) {
-        document.getElementById('companiesCount').textContent = dashboardData.overview.totalCompanies + '+';
+        document.getElementById('companiesCount').textContent = dashboardData.overview.totalCompanies;
         document.getElementById('marketSize').textContent = '$' + dashboardData.overview.marketSize;
         document.getElementById('githubRepos').textContent = dashboardData.overview.githubRepos;
         document.getElementById('totalFunding').textContent = '$' + dashboardData.overview.totalFunding;
     }
 }
 
-// Technology Category Chart (Pie Chart)
+// Initialize filter dropdowns
+function initializeFilters() {
+    if (!dashboardData) return;
+
+    // Category filter
+    const categoryFilter = document.getElementById('categoryFilter');
+    const categories = [...new Set(allCompanies.map(c => c.category).filter(Boolean))];
+    categories.sort().forEach(category => {
+        const option = document.createElement('option');
+        option.value = category;
+        option.textContent = category;
+        categoryFilter.appendChild(option);
+    });
+
+    // Stage filter
+    const stageFilter = document.getElementById('stageFilter');
+    const stages = [...new Set(allCompanies.map(c => c.stage).filter(Boolean))];
+    stages.sort().forEach(stage => {
+        const option = document.createElement('option');
+        option.value = stage;
+        option.textContent = stage;
+        stageFilter.appendChild(option);
+    });
+
+    // Country filter
+    const countryFilter = document.getElementById('countryFilter');
+    const countries = [...new Set(allCompanies.map(c => c.country).filter(Boolean))];
+    countries.sort().forEach(country => {
+        const option = document.createElement('option');
+        option.value = country;
+        option.textContent = country;
+        countryFilter.appendChild(option);
+    });
+}
+
+// Setup event listeners
+function setupEventListeners() {
+    // Search
+    document.getElementById('companySearch').addEventListener('input', applyFilters);
+
+    // Filters
+    document.getElementById('categoryFilter').addEventListener('change', applyFilters);
+    document.getElementById('stageFilter').addEventListener('change', applyFilters);
+    document.getElementById('countryFilter').addEventListener('change', applyFilters);
+    document.getElementById('sortBy').addEventListener('change', applyFilters);
+
+    // Reset button
+    document.getElementById('resetFilters').addEventListener('click', resetFilters);
+
+    // Pagination
+    document.getElementById('firstPage').addEventListener('click', () => goToPage(1));
+    document.getElementById('prevPage').addEventListener('click', () => goToPage(currentPage - 1));
+    document.getElementById('nextPage').addEventListener('click', () => goToPage(currentPage + 1));
+    document.getElementById('lastPage').addEventListener('click', () => goToPage(Math.ceil(filteredCompanies.length / companiesPerPage)));
+}
+
+// Apply all filters
+function applyFilters() {
+    const searchTerm = document.getElementById('companySearch').value.toLowerCase();
+    const categoryFilter = document.getElementById('categoryFilter').value;
+    const stageFilter = document.getElementById('stageFilter').value;
+    const countryFilter = document.getElementById('countryFilter').value;
+    const sortBy = document.getElementById('sortBy').value;
+
+    // Filter companies
+    filteredCompanies = allCompanies.filter(company => {
+        const matchesSearch = !searchTerm || 
+            company.name.toLowerCase().includes(searchTerm) ||
+            (company.tech && company.tech.some(t => t.toLowerCase().includes(searchTerm))) ||
+            (company.location && company.location.toLowerCase().includes(searchTerm)) ||
+            (company.country && company.country.toLowerCase().includes(searchTerm));
+
+        const matchesCategory = categoryFilter === 'all' || company.category === categoryFilter;
+        const matchesStage = stageFilter === 'all' || company.stage === stageFilter;
+        const matchesCountry = countryFilter === 'all' || company.country === countryFilter;
+
+        return matchesSearch && matchesCategory && matchesStage && matchesCountry;
+    });
+
+    // Sort companies
+    sortCompanies(sortBy);
+
+    // Reset to first page
+    currentPage = 1;
+    displayCompanies();
+}
+
+// Sort companies
+function sortCompanies(sortBy) {
+    switch(sortBy) {
+        case 'funding-desc':
+            filteredCompanies.sort((a, b) => (b.funding || 0) - (a.funding || 0));
+            break;
+        case 'funding-asc':
+            filteredCompanies.sort((a, b) => (a.funding || 0) - (b.funding || 0));
+            break;
+        case 'name-asc':
+            filteredCompanies.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+        case 'name-desc':
+            filteredCompanies.sort((a, b) => b.name.localeCompare(a.name));
+            break;
+        case 'founded-desc':
+            filteredCompanies.sort((a, b) => (b.founded || 0) - (a.founded || 0));
+            break;
+        case 'founded-asc':
+            filteredCompanies.sort((a, b) => (a.founded || 0) - (b.founded || 0));
+            break;
+    }
+}
+
+// Reset filters
+function resetFilters() {
+    document.getElementById('companySearch').value = '';
+    document.getElementById('categoryFilter').value = 'all';
+    document.getElementById('stageFilter').value = 'all';
+    document.getElementById('countryFilter').value = 'all';
+    document.getElementById('sortBy').value = 'funding-desc';
+    applyFilters();
+}
+
+// Display companies with pagination
+function displayCompanies() {
+    const startIndex = (currentPage - 1) * companiesPerPage;
+    const endIndex = Math.min(startIndex + companiesPerPage, filteredCompanies.length);
+    const companiesToShow = filteredCompanies.slice(startIndex, endIndex);
+
+    // Update results counter
+    const totalCompanies = filteredCompanies.length;
+    document.getElementById('resultsCounter').textContent = 
+        totalCompanies > 0 ? `Showing ${startIndex + 1}-${endIndex} of ${totalCompanies} companies` : 'No companies found';
+
+    // Create table
+    const container = document.getElementById('companyTable');
+    
+    if (companiesToShow.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>No companies found</h3>
+                <p>Try adjusting your filters or search terms</p>
+            </div>
+        `;
+        updatePagination();
+        return;
+    }
+
+    const table = `
+        <div class="company-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Company</th>
+                        <th>Funding</th>
+                        <th>Stage</th>
+                        <th>Category</th>
+                        <th>Location</th>
+                        <th>Founded</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${companiesToShow.map(company => `
+                        <tr>
+                            <td>
+                                <div class="company-name">${company.name}</div>
+                                <div class="company-tech">${Array.isArray(company.tech) ? company.tech.slice(0, 2).join(', ') : company.tech || 'N/A'}</div>
+                            </td>
+                            <td class="company-funding">${company.funding ? '$' + company.funding + 'M' : 'N/A'}</td>
+                            <td><span class="company-stage ${getStageClass(company.stage)}">${company.stage || 'N/A'}</span></td>
+                            <td>${company.category || 'N/A'}</td>
+                            <td class="company-location">${company.location || company.country || 'N/A'}</td>
+                            <td>${company.founded || 'N/A'}</td>
+                            <td><span class="company-status ${getStatusClass(company.status)}">${company.status || 'Active'}</span></td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>
+    `;
+
+    container.innerHTML = table;
+    updatePagination();
+}
+
+// Get stage CSS class
+function getStageClass(stage) {
+    if (!stage) return '';
+    const stageClean = stage.toLowerCase().replace(/[^a-z0-9]/g, '-');
+    return 'stage-' + stageClean;
+}
+
+// Get status CSS class
+function getStatusClass(status) {
+    if (!status) return 'status-active';
+    return 'status-' + status.toLowerCase();
+}
+
+// Update pagination controls
+function updatePagination() {
+    const totalPages = Math.ceil(filteredCompanies.length / companiesPerPage);
+
+    // Update button states
+    document.getElementById('firstPage').disabled = currentPage === 1;
+    document.getElementById('prevPage').disabled = currentPage === 1;
+    document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
+    document.getElementById('lastPage').disabled = currentPage === totalPages || totalPages === 0;
+
+    // Generate page numbers
+    const pageNumbersContainer = document.getElementById('pageNumbers');
+    pageNumbersContainer.innerHTML = '';
+
+    if (totalPages <= 1) return;
+
+    const maxVisiblePages = 7;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage < maxVisiblePages - 1) {
+        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    // First page
+    if (startPage > 1) {
+        pageNumbersContainer.appendChild(createPageButton(1));
+        if (startPage > 2) {
+            pageNumbersContainer.appendChild(createEllipsis());
+        }
+    }
+
+    // Page numbers
+    for (let i = startPage; i <= endPage; i++) {
+        pageNumbersContainer.appendChild(createPageButton(i));
+    }
+
+    // Last page
+    if (endPage < totalPages) {
+        if (endPage < totalPages - 1) {
+            pageNumbersContainer.appendChild(createEllipsis());
+        }
+        pageNumbersContainer.appendChild(createPageButton(totalPages));
+    }
+}
+
+// Create page button
+function createPageButton(pageNum) {
+    const button = document.createElement('div');
+    button.className = 'page-number' + (pageNum === currentPage ? ' active' : '');
+    button.textContent = pageNum;
+    button.addEventListener('click', () => goToPage(pageNum));
+    return button;
+}
+
+// Create ellipsis
+function createEllipsis() {
+    const ellipsis = document.createElement('div');
+    ellipsis.className = 'page-number ellipsis';
+    ellipsis.textContent = '...';
+    return ellipsis;
+}
+
+// Go to specific page
+function goToPage(pageNum) {
+    const totalPages = Math.ceil(filteredCompanies.length / companiesPerPage);
+    if (pageNum < 1 || pageNum > totalPages) return;
+    currentPage = pageNum;
+    displayCompanies();
+    
+    // Scroll to companies section
+    document.getElementById('companies').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Technology Category Chart
 function createTechnologyCategoryChart() {
     const ctx = document.getElementById('techCategoryChart').getContext('2d');
     
-    const data = dashboardData ? dashboardData.technologies.categories : [
-        { name: 'AI & Machine Learning', value: 24 },
-        { name: 'Precision Agriculture', value: 18 },
-        { name: 'Crop Management', value: 16 },
-        { name: 'Data Analytics', value: 15 },
-        { name: 'Farm Automation', value: 12 },
-        { name: 'Biotechnology', value: 10 }
-    ];
+    const data = dashboardData ? dashboardData.technologies.categories : [];
 
     new Chart(ctx, {
         type: 'doughnut',
@@ -71,12 +339,8 @@ function createTechnologyCategoryChart() {
             datasets: [{
                 data: data.map(item => item.value),
                 backgroundColor: [
-                    '#2c5f7c',
-                    '#3a8a5d',
-                    '#4a9f6e',
-                    '#5ab57f',
-                    '#6bc990',
-                    '#7edfa1'
+                    '#2c5f7c', '#3a8a5d', '#4a9f6e', '#5ab57f',
+                    '#6bc990', '#7edfa1', '#8fe5b2', '#a0efc3'
                 ],
                 borderWidth: 2,
                 borderColor: '#fff'
@@ -88,10 +352,7 @@ function createTechnologyCategoryChart() {
             plugins: {
                 legend: {
                     position: 'right',
-                    labels: {
-                        padding: 15,
-                        font: { size: 12 }
-                    }
+                    labels: { padding: 15, font: { size: 12 } }
                 },
                 tooltip: {
                     callbacks: {
@@ -105,18 +366,11 @@ function createTechnologyCategoryChart() {
     });
 }
 
-// Geographic Distribution Chart (Bar Chart)
+// Geographic Distribution Chart
 function createGeographicDistributionChart() {
     const ctx = document.getElementById('geoDistributionChart').getContext('2d');
     
-    const data = dashboardData ? dashboardData.geography.distribution : [
-        { country: 'United States', count: 28 },
-        { country: 'India', count: 12 },
-        { country: 'Israel', count: 8 },
-        { country: 'Netherlands', count: 6 },
-        { country: 'Germany', count: 5 },
-        { country: 'Others', count: 4 }
-    ];
+    const data = dashboardData ? dashboardData.geography.distribution.slice(0, 10) : [];
 
     new Chart(ctx, {
         type: 'bar',
@@ -144,10 +398,7 @@ function createGeographicDistributionChart() {
                 }
             },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    ticks: { stepSize: 5 }
-                }
+                y: { beginAtZero: true, ticks: { stepSize: 5 } }
             }
         }
     });
@@ -157,33 +408,20 @@ function createGeographicDistributionChart() {
 function createFundingBubbleChart() {
     const ctx = document.getElementById('fundingBubbleChart').getContext('2d');
     
-    const companies = dashboardData ? dashboardData.companies : [
-        { name: 'Indigo Agriculture', funding: 1200, stage: 'Series F', year: 2021, employees: 850 },
-        { name: 'Plenty', funding: 940, stage: 'Series E', year: 2022, employees: 500 },
-        { name: 'Farmers Business Network', funding: 890, stage: 'Series G', year: 2021, employees: 600 },
-        { name: 'Bowery Farming', funding: 647, stage: 'Series C', year: 2021, employees: 400 },
-        { name: 'Pivot Bio', funding: 566, stage: 'Series D', year: 2022, employees: 350 },
-        { name: 'Trace Genomics', funding: 185, stage: 'Series C', year: 2023, employees: 150 },
-        { name: 'Taranis', funding: 150, stage: 'Series C', year: 2021, employees: 200 },
-        { name: 'CropX', funding: 135, stage: 'Series C', year: 2022, employees: 120 },
-        { name: 'AgShift', funding: 28, stage: 'Series B', year: 2023, employees: 80 },
-        { name: 'FarmLogs', funding: 24, stage: 'Series B', year: 2020, employees: 60 },
-        { name: 'Granular', funding: 110, stage: 'Acquired', year: 2017, employees: 200 },
-        { name: 'Blue River Tech', funding: 92, stage: 'Acquired', year: 2017, employees: 150 },
-        { name: 'OneSoil', funding: 15, stage: 'Series A', year: 2023, employees: 45 },
-        { name: 'AgroStar', funding: 127, stage: 'Series D', year: 2022, employees: 300 },
-        { name: 'eFishery', funding: 200, stage: 'Series C', year: 2022, employees: 250 }
-    ];
+    const companies = dashboardData ? dashboardData.companies.slice(0, 30) : [];
 
     const stageColors = {
-        'Series A': '#7edfa1',
-        'Series B': '#6bc990',
-        'Series C': '#5ab57f',
-        'Series D': '#4a9f6e',
-        'Series E': '#3a8a5d',
-        'Series F': '#2c5f7c',
-        'Series G': '#1e4a5f',
-        'Acquired': '#e74c3c'
+        'Seed': '#7edfa1',
+        'Series A': '#6bc990',
+        'Series B': '#5ab57f',
+        'Series C': '#4a9f6e',
+        'Series D': '#3a8a5d',
+        'Series E': '#2c5f7c',
+        'Series F': '#1e4a5f',
+        'Series G': '#0f3442',
+        'Public': '#f39c12',
+        'Acquired': '#e74c3c',
+        'Corporate': '#3498db'
     };
 
     const datasets = Object.keys(stageColors).map(stage => {
@@ -191,9 +429,9 @@ function createFundingBubbleChart() {
         return {
             label: stage,
             data: stageCompanies.map(c => ({
-                x: c.year,
-                y: c.funding,
-                r: Math.sqrt(c.funding) / 2,
+                x: c.lastRoundYear || c.founded || 2020,
+                y: c.funding || 0,
+                r: Math.sqrt((c.funding || 0) * 10) / 3,
                 company: c.name,
                 employees: c.employees
             })),
@@ -201,7 +439,7 @@ function createFundingBubbleChart() {
             borderColor: stageColors[stage],
             borderWidth: 2
         };
-    });
+    }).filter(ds => ds.data.length > 0);
 
     new Chart(ctx, {
         type: 'bubble',
@@ -212,7 +450,7 @@ function createFundingBubbleChart() {
             plugins: {
                 legend: {
                     position: 'top',
-                    labels: { padding: 15, font: { size: 11 } }
+                    labels: { padding: 10, font: { size: 10 } }
                 },
                 tooltip: {
                     callbacks: {
@@ -222,7 +460,7 @@ function createFundingBubbleChart() {
                                 point.company,
                                 'Funding: $' + point.y + 'M',
                                 'Year: ' + point.x,
-                                'Employees: ' + point.employees
+                                'Employees: ' + (point.employees || 'N/A')
                             ];
                         }
                     }
@@ -231,7 +469,7 @@ function createFundingBubbleChart() {
             scales: {
                 x: {
                     title: { display: true, text: 'Year' },
-                    min: 2016,
+                    min: 2010,
                     max: 2024
                 },
                 y: {
@@ -243,20 +481,11 @@ function createFundingBubbleChart() {
     });
 }
 
-// Funding Trends Line Chart
+// Funding Trends Chart
 function createFundingTrendsChart() {
     const ctx = document.getElementById('fundingTrendsChart').getContext('2d');
     
-    const data = dashboardData ? dashboardData.funding.trends : [
-        { year: '2018', amount: 2100 },
-        { year: '2019', amount: 2850 },
-        { year: '2020', amount: 3400 },
-        { year: '2021', amount: 5200 },
-        { year: '2022', amount: 4100 },
-        { year: '2023', amount: 3800 },
-        { year: '2024', amount: 4500 },
-        { year: '2025', amount: 5100 }
-    ];
+    const data = dashboardData ? dashboardData.funding.trends : [];
 
     new Chart(ctx, {
         type: 'line',
@@ -291,13 +520,8 @@ function createFundingTrendsChart() {
                 }
             },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Funding Amount ($M)' }
-                },
-                x: {
-                    title: { display: true, text: 'Year' }
-                }
+                y: { beginAtZero: true, title: { display: true, text: 'Funding Amount ($M)' } },
+                x: { title: { display: true, text: 'Year' } }
             }
         }
     });
@@ -307,14 +531,7 @@ function createFundingTrendsChart() {
 function createFundingStageChart() {
     const ctx = document.getElementById('fundingStageChart').getContext('2d');
     
-    const data = dashboardData ? dashboardData.funding.byStage : [
-        { stage: 'Seed', amount: 245 },
-        { stage: 'Series A', amount: 680 },
-        { stage: 'Series B', amount: 1250 },
-        { stage: 'Series C', amount: 2100 },
-        { stage: 'Series D+', amount: 3850 },
-        { stage: 'Acquired', amount: 4300 }
-    ];
+    const data = dashboardData ? dashboardData.funding.byStage : [];
 
     new Chart(ctx, {
         type: 'bar',
@@ -324,12 +541,8 @@ function createFundingStageChart() {
                 label: 'Total Funding ($M)',
                 data: data.map(item => item.amount),
                 backgroundColor: [
-                    '#7edfa1',
-                    '#6bc990',
-                    '#5ab57f',
-                    '#4a9f6e',
-                    '#3a8a5d',
-                    '#2c5f7c'
+                    '#7edfa1', '#6bc990', '#5ab57f', '#4a9f6e',
+                    '#3a8a5d', '#2c5f7c', '#1e4a5f', '#0f3442'
                 ],
                 borderWidth: 0
             }]
@@ -348,10 +561,7 @@ function createFundingStageChart() {
                 }
             },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Total Funding ($M)' }
-                }
+                y: { beginAtZero: true, title: { display: true, text: 'Total Funding ($M)' } }
             }
         }
     });
@@ -361,13 +571,7 @@ function createFundingStageChart() {
 function createQuarterlyFundingChart() {
     const ctx = document.getElementById('quarterlyFundingChart').getContext('2d');
     
-    const data = dashboardData ? dashboardData.funding.quarterly : [
-        { quarter: 'Q1 2024', amount: 950, deals: 23 },
-        { quarter: 'Q2 2024', amount: 1100, deals: 28 },
-        { quarter: 'Q3 2024', amount: 1250, deals: 31 },
-        { quarter: 'Q4 2024', amount: 1200, deals: 27 },
-        { quarter: 'Q1 2025', amount: 1350, deals: 34 }
-    ];
+    const data = dashboardData ? dashboardData.funding.quarterly : [];
 
     new Chart(ctx, {
         type: 'line',
@@ -397,13 +601,8 @@ function createQuarterlyFundingChart() {
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
-            plugins: {
-                legend: { display: true }
-            },
+            interaction: { mode: 'index', intersect: false },
+            plugins: { legend: { display: true } },
             scales: {
                 y: {
                     type: 'linear',
@@ -427,18 +626,7 @@ function createQuarterlyFundingChart() {
 function createGitHubReposChart() {
     const ctx = document.getElementById('githubReposChart').getContext('2d');
     
-    const data = dashboardData ? dashboardData.github.topRepos : [
-        { name: 'farmOS', stars: 2800, forks: 680 },
-        { name: 'OpenAg-Brain', stars: 1950, forks: 420 },
-        { name: 'AgDataCommons', stars: 1650, forks: 380 },
-        { name: 'CropAnalyzer', stars: 1420, forks: 290 },
-        { name: 'SmartFarm-AI', stars: 1280, forks: 315 },
-        { name: 'AgroML', stars: 1150, forks: 265 },
-        { name: 'PrecisionAg', stars: 980, forks: 210 },
-        { name: 'FarmBot-OS', stars: 890, forks: 195 },
-        { name: 'CropVision', stars: 750, forks: 165 },
-        { name: 'SoilSense', stars: 620, forks: 140 }
-    ];
+    const data = dashboardData ? dashboardData.github.topRepos : [];
 
     new Chart(ctx, {
         type: 'bar',
@@ -463,14 +651,8 @@ function createGitHubReposChart() {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: true,
-            plugins: {
-                legend: { display: true }
-            },
-            scales: {
-                x: {
-                    beginAtZero: true
-                }
-            }
+            plugins: { legend: { display: true } },
+            scales: { x: { beginAtZero: true } }
         }
     });
 }
@@ -479,16 +661,7 @@ function createGitHubReposChart() {
 function createPatentCategoryChart() {
     const ctx = document.getElementById('patentCategoryChart').getContext('2d');
     
-    const data = dashboardData ? dashboardData.patents.byCategory : [
-        { category: 'AI/ML Applications', count: 342 },
-        { category: 'Sensor Technology', count: 285 },
-        { category: 'Automation Systems', count: 218 },
-        { category: 'Data Analytics', count: 196 },
-        { category: 'Biotechnology', count: 156 },
-        { category: 'IoT Devices', count: 145 },
-        { category: 'Robotics', count: 128 },
-        { category: 'Imaging Systems', count: 98 }
-    ];
+    const data = dashboardData ? dashboardData.patents.byCategory : [];
 
     new Chart(ctx, {
         type: 'bar',
@@ -505,68 +678,13 @@ function createPatentCategoryChart() {
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            plugins: {
-                legend: { display: false }
-            },
+            plugins: { legend: { display: false } },
             scales: {
-                y: {
-                    beginAtZero: true,
-                    title: { display: true, text: 'Number of Patents' }
-                },
-                x: {
-                    ticks: {
-                        maxRotation: 45,
-                        minRotation: 45
-                    }
-                }
+                y: { beginAtZero: true, title: { display: true, text: 'Number of Patents' } },
+                x: { ticks: { maxRotation: 45, minRotation: 45 } }
             }
         }
     });
-}
-
-// Create Company Table
-function createCompanyTable() {
-    const container = document.getElementById('companyTable');
-    
-    const companies = dashboardData ? dashboardData.companies.slice(0, 10) : [
-        { name: 'Indigo Agriculture', funding: 1200, location: 'USA', tech: 'Microbial Seed Treatments' },
-        { name: 'Plenty', funding: 940, location: 'USA', tech: 'Vertical Farming' },
-        { name: 'Farmers Business Network', funding: 890, location: 'USA', tech: 'Data Analytics' },
-        { name: 'Bowery Farming', funding: 647, location: 'USA', tech: 'Indoor Farming' },
-        { name: 'Pivot Bio', funding: 566, location: 'USA', tech: 'Nitrogen Fixation' },
-        { name: 'eFishery', funding: 200, location: 'Indonesia', tech: 'Aquaculture Automation' },
-        { name: 'Trace Genomics', funding: 185, location: 'USA', tech: 'Soil Testing' },
-        { name: 'Taranis', funding: 150, location: 'Israel', tech: 'AI Crop Intelligence' },
-        { name: 'CropX', funding: 135, location: 'Israel', tech: 'Soil Sensors' },
-        { name: 'AgroStar', funding: 127, location: 'India', tech: 'AgTech Marketplace' }
-    ];
-
-    const table = `
-        <div class="company-table">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Company</th>
-                        <th>Total Funding</th>
-                        <th>Location</th>
-                        <th>Technology</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${companies.map(company => `
-                        <tr>
-                            <td><strong>${company.name}</strong></td>
-                            <td>$${company.funding}M</td>
-                            <td>${company.location}</td>
-                            <td>${company.tech}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        </div>
-    `;
-
-    container.innerHTML = table;
 }
 
 // Highlight active nav link on scroll
@@ -578,7 +696,6 @@ window.addEventListener('scroll', () => {
     
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
-        const sectionHeight = section.clientHeight;
         if (window.pageYOffset >= sectionTop - 100) {
             currentSection = section.getAttribute('id');
         }
