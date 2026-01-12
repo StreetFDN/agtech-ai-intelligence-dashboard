@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AgTech AI Intelligence Dashboard</title>
+    <title>Street Labs - AgTech AI Intelligence Dashboard</title>
+    <meta name="description" content="Comprehensive AgTech market intelligence and analytics platform by Street Labs">
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
@@ -11,8 +12,20 @@
     <!-- Header -->
     <header>
         <div class="container">
-            <h1>🌾 AgTech AI Intelligence Dashboard</h1>
-            <p class="subtitle">Comprehensive Agricultural Technology Market Intelligence & Innovation Tracking</p>
+            <div class="header-content">
+                <div class="brand-section">
+                    <div class="street-labs-logo">
+                        <span class="logo-icon">🛣️</span>
+                        <span class="logo-text">Street Labs</span>
+                    </div>
+                    <div class="header-divider"></div>
+                    <h1>🌾 AgTech AI Intelligence Dashboard</h1>
+                </div>
+                <div class="header-tagline">
+                    <p class="subtitle">Comprehensive Agricultural Technology Market Intelligence & Innovation Tracking</p>
+                    <p class="powered-by">Powered by <a href="https://street.app" target="_blank" class="street-link">street.app</a></p>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -53,7 +66,7 @@
                         <div class="metric-label">GitHub Repositories</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-icon">📈</div>
+                        <div class="metric-icon">📊</div>
                         <div class="metric-value" id="totalFunding">$18.7B</div>
                         <div class="metric-label">Total Funding</div>
                     </div>
@@ -77,47 +90,51 @@
             <div class="container">
                 <h2>Company Landscape</h2>
                 
-                <!-- Company Search and Filters -->
-                <div class="company-controls">
-                    <div class="search-bar">
-                        <input type="text" id="companySearch" placeholder="🔍 Search companies by name, technology, or location...">
+                <!-- Search and Filter Controls -->
+                <div class="controls-section">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="🔍 Search companies by name, technology, or location..." class="search-input">
                     </div>
                     
                     <div class="filter-controls">
                         <div class="filter-group">
                             <label for="categoryFilter">Category:</label>
-                            <select id="categoryFilter">
+                            <select id="categoryFilter" class="filter-select">
                                 <option value="all">All Categories</option>
                             </select>
                         </div>
                         
                         <div class="filter-group">
                             <label for="stageFilter">Stage:</label>
-                            <select id="stageFilter">
+                            <select id="stageFilter" class="filter-select">
                                 <option value="all">All Stages</option>
                             </select>
                         </div>
                         
                         <div class="filter-group">
                             <label for="countryFilter">Country:</label>
-                            <select id="countryFilter">
+                            <select id="countryFilter" class="filter-select">
                                 <option value="all">All Countries</option>
                             </select>
                         </div>
                         
                         <div class="filter-group">
-                            <label for="sortBy">Sort By:</label>
-                            <select id="sortBy">
+                            <label for="sortSelect">Sort by:</label>
+                            <select id="sortSelect" class="filter-select">
                                 <option value="funding-desc">Funding (High to Low)</option>
                                 <option value="funding-asc">Funding (Low to High)</option>
                                 <option value="name-asc">Name (A-Z)</option>
                                 <option value="name-desc">Name (Z-A)</option>
-                                <option value="founded-desc">Newest First</option>
-                                <option value="founded-asc">Oldest First</option>
+                                <option value="year-desc">Founded (Newest)</option>
+                                <option value="year-asc">Founded (Oldest)</option>
                             </select>
                         </div>
                         
-                        <button id="resetFilters" class="btn-reset">Reset Filters</button>
+                        <button id="resetFilters" class="reset-btn">Reset Filters</button>
+                    </div>
+                    
+                    <div class="results-info">
+                        <span id="resultsCounter" class="results-counter">Showing 1-20 of 108 companies</span>
                     </div>
                 </div>
 
@@ -127,23 +144,16 @@
                     <canvas id="fundingBubbleChart"></canvas>
                 </div>
 
-                <!-- Company Results Counter -->
-                <div class="results-info">
-                    <p id="resultsCounter">Showing 1-20 of 108 companies</p>
-                </div>
-
-                <!-- Company Table -->
                 <div class="company-table-container">
-                    <div id="companyTable"></div>
-                </div>
-
-                <!-- Pagination Controls -->
-                <div class="pagination-controls" id="paginationControls">
-                    <button id="firstPage" class="pagination-btn">First</button>
-                    <button id="prevPage" class="pagination-btn">Previous</button>
-                    <div class="page-numbers" id="pageNumbers"></div>
-                    <button id="nextPage" class="pagination-btn">Next</button>
-                    <button id="lastPage" class="pagination-btn">Last</button>
+                    <h3>Company Directory</h3>
+                    <div id="companyTable" class="company-table"></div>
+                    
+                    <!-- Pagination Controls -->
+                    <div class="pagination-controls">
+                        <button id="prevPage" class="pagination-btn" disabled>← Previous</button>
+                        <div id="pageNumbers" class="page-numbers"></div>
+                        <button id="nextPage" class="pagination-btn">Next →</button>
+                    </div>
                 </div>
             </div>
         </section>
@@ -281,8 +291,24 @@
     <!-- Footer -->
     <footer>
         <div class="container">
-            <p>&copy; 2026 AgTech AI Intelligence Dashboard. Data updated: January 2026</p>
-            <p>Comprehensive market intelligence for agricultural technology innovation</p>
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="footer-logo">
+                        <span class="logo-icon">🛣️</span>
+                        <span class="logo-text">Street Labs</span>
+                    </div>
+                    <p class="footer-tagline">Building the future of technology intelligence</p>
+                </div>
+                <div class="footer-links">
+                    <a href="https://street.app" target="_blank" class="footer-link">street.app</a>
+                    <a href="https://github.com/StreetFDN" target="_blank" class="footer-link">GitHub</a>
+                    <a href="mailto:contact@street.app" class="footer-link">Contact</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Street Labs. All rights reserved.</p>
+                <p class="footer-data">AgTech AI Intelligence Dashboard • Data updated: January 2026 • 108 companies tracked</p>
+            </div>
         </div>
     </footer>
 

@@ -22,7 +22,7 @@ fetch('data.json')
     .then(response => response.json())
     .then(data => {
         dashboardData = data;
-        allCompanies = data.companies || [];
+        allCompanies = data.companies;
         filteredCompanies = [...allCompanies];
         initializeDashboard();
     })
@@ -35,6 +35,7 @@ function initializeDashboard() {
     updateMetrics();
     initializeFilters();
     setupEventListeners();
+    
     createTechnologyCategoryChart();
     createGeographicDistributionChart();
     createFundingBubbleChart();
@@ -43,6 +44,7 @@ function initializeDashboard() {
     createQuarterlyFundingChart();
     createGitHubReposChart();
     createPatentCategoryChart();
+    
     displayCompanies();
 }
 
@@ -55,34 +57,33 @@ function updateMetrics() {
     }
 }
 
-// Initialize filter dropdowns
 function initializeFilters() {
     if (!dashboardData) return;
 
-    // Category filter
+    // Populate category filter
     const categoryFilter = document.getElementById('categoryFilter');
-    const categories = [...new Set(allCompanies.map(c => c.category).filter(Boolean))];
-    categories.sort().forEach(category => {
+    const categories = [...new Set(allCompanies.map(c => c.category))].sort();
+    categories.forEach(cat => {
         const option = document.createElement('option');
-        option.value = category;
-        option.textContent = category;
+        option.value = cat;
+        option.textContent = cat;
         categoryFilter.appendChild(option);
     });
 
-    // Stage filter
+    // Populate stage filter
     const stageFilter = document.getElementById('stageFilter');
-    const stages = [...new Set(allCompanies.map(c => c.stage).filter(Boolean))];
-    stages.sort().forEach(stage => {
+    const stages = [...new Set(allCompanies.map(c => c.stage))].sort();
+    stages.forEach(stage => {
         const option = document.createElement('option');
         option.value = stage;
         option.textContent = stage;
         stageFilter.appendChild(option);
     });
 
-    // Country filter
+    // Populate country filter
     const countryFilter = document.getElementById('countryFilter');
-    const countries = [...new Set(allCompanies.map(c => c.country).filter(Boolean))];
-    countries.sort().forEach(country => {
+    const countries = [...new Set(allCompanies.map(c => c.country))].sort();
+    countries.forEach(country => {
         const option = document.createElement('option');
         option.value = country;
         option.textContent = country;
@@ -90,43 +91,44 @@ function initializeFilters() {
     });
 }
 
-// Setup event listeners
 function setupEventListeners() {
-    // Search
-    document.getElementById('companySearch').addEventListener('input', applyFilters);
+    // Search input
+    document.getElementById('searchInput').addEventListener('input', handleSearch);
 
-    // Filters
+    // Filter selects
     document.getElementById('categoryFilter').addEventListener('change', applyFilters);
     document.getElementById('stageFilter').addEventListener('change', applyFilters);
     document.getElementById('countryFilter').addEventListener('change', applyFilters);
-    document.getElementById('sortBy').addEventListener('change', applyFilters);
+    document.getElementById('sortSelect').addEventListener('change', applyFilters);
 
     // Reset button
     document.getElementById('resetFilters').addEventListener('click', resetFilters);
 
-    // Pagination
-    document.getElementById('firstPage').addEventListener('click', () => goToPage(1));
-    document.getElementById('prevPage').addEventListener('click', () => goToPage(currentPage - 1));
-    document.getElementById('nextPage').addEventListener('click', () => goToPage(currentPage + 1));
-    document.getElementById('lastPage').addEventListener('click', () => goToPage(Math.ceil(filteredCompanies.length / companiesPerPage)));
+    // Pagination buttons
+    document.getElementById('prevPage').addEventListener('click', () => changePage(-1));
+    document.getElementById('nextPage').addEventListener('click', () => changePage(1));
 }
 
-// Apply all filters
+function handleSearch(e) {
+    const searchTerm = e.target.value.toLowerCase();
+    applyFilters();
+}
+
 function applyFilters() {
-    const searchTerm = document.getElementById('companySearch').value.toLowerCase();
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const categoryFilter = document.getElementById('categoryFilter').value;
     const stageFilter = document.getElementById('stageFilter').value;
     const countryFilter = document.getElementById('countryFilter').value;
-    const sortBy = document.getElementById('sortBy').value;
+    const sortSelect = document.getElementById('sortSelect').value;
 
-    // Filter companies
+    // Apply filters
     filteredCompanies = allCompanies.filter(company => {
         const matchesSearch = !searchTerm || 
             company.name.toLowerCase().includes(searchTerm) ||
-            (company.tech && company.tech.some(t => t.toLowerCase().includes(searchTerm))) ||
-            (company.location && company.location.toLowerCase().includes(searchTerm)) ||
-            (company.country && company.country.toLowerCase().includes(searchTerm));
-
+            company.tech.some(t => t.toLowerCase().includes(searchTerm)) ||
+            company.location.toLowerCase().includes(searchTerm) ||
+            company.country.toLowerCase().includes(searchTerm);
+        
         const matchesCategory = categoryFilter === 'all' || company.category === categoryFilter;
         const matchesStage = stageFilter === 'all' || company.stage === stageFilter;
         const matchesCountry = countryFilter === 'all' || company.country === countryFilter;
@@ -134,22 +136,21 @@ function applyFilters() {
         return matchesSearch && matchesCategory && matchesStage && matchesCountry;
     });
 
-    // Sort companies
-    sortCompanies(sortBy);
+    // Apply sorting
+    sortCompanies(sortSelect);
 
     // Reset to first page
     currentPage = 1;
     displayCompanies();
 }
 
-// Sort companies
 function sortCompanies(sortBy) {
     switch(sortBy) {
         case 'funding-desc':
-            filteredCompanies.sort((a, b) => (b.funding || 0) - (a.funding || 0));
+            filteredCompanies.sort((a, b) => b.funding - a.funding);
             break;
         case 'funding-asc':
-            filteredCompanies.sort((a, b) => (a.funding || 0) - (b.funding || 0));
+            filteredCompanies.sort((a, b) => a.funding - b.funding);
             break;
         case 'name-asc':
             filteredCompanies.sort((a, b) => a.name.localeCompare(b.name));
@@ -157,179 +158,137 @@ function sortCompanies(sortBy) {
         case 'name-desc':
             filteredCompanies.sort((a, b) => b.name.localeCompare(a.name));
             break;
-        case 'founded-desc':
-            filteredCompanies.sort((a, b) => (b.founded || 0) - (a.founded || 0));
+        case 'year-desc':
+            filteredCompanies.sort((a, b) => b.founded - a.founded);
             break;
-        case 'founded-asc':
-            filteredCompanies.sort((a, b) => (a.founded || 0) - (b.founded || 0));
+        case 'year-asc':
+            filteredCompanies.sort((a, b) => a.founded - b.founded);
             break;
     }
 }
 
-// Reset filters
 function resetFilters() {
-    document.getElementById('companySearch').value = '';
+    document.getElementById('searchInput').value = '';
     document.getElementById('categoryFilter').value = 'all';
     document.getElementById('stageFilter').value = 'all';
     document.getElementById('countryFilter').value = 'all';
-    document.getElementById('sortBy').value = 'funding-desc';
+    document.getElementById('sortSelect').value = 'funding-desc';
     applyFilters();
 }
 
-// Display companies with pagination
 function displayCompanies() {
-    const startIndex = (currentPage - 1) * companiesPerPage;
-    const endIndex = Math.min(startIndex + companiesPerPage, filteredCompanies.length);
-    const companiesToShow = filteredCompanies.slice(startIndex, endIndex);
-
-    // Update results counter
-    const totalCompanies = filteredCompanies.length;
-    document.getElementById('resultsCounter').textContent = 
-        totalCompanies > 0 ? `Showing ${startIndex + 1}-${endIndex} of ${totalCompanies} companies` : 'No companies found';
-
-    // Create table
     const container = document.getElementById('companyTable');
-    
-    if (companiesToShow.length === 0) {
+    const start = (currentPage - 1) * companiesPerPage;
+    const end = start + companiesPerPage;
+    const pageCompanies = filteredCompanies.slice(start, end);
+
+    if (pageCompanies.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
-                <h3>No companies found</h3>
-                <p>Try adjusting your filters or search terms</p>
+                <div class="empty-state-icon">🔍</div>
+                <div class="empty-state-text">No companies found matching your criteria</div>
+                <p style="color: #666; margin-top: 0.5rem;">Try adjusting your filters or search terms</p>
             </div>
         `;
+        updateResultsCounter(0, 0, 0);
         updatePagination();
         return;
     }
 
     const table = `
-        <div class="company-table">
-            <table>
-                <thead>
+        <table>
+            <thead>
+                <tr>
+                    <th>Company</th>
+                    <th>Category</th>
+                    <th>Stage</th>
+                    <th>Funding</th>
+                    <th>Location</th>
+                    <th>Founded</th>
+                    <th>Employees</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${pageCompanies.map(company => `
                     <tr>
-                        <th>Company</th>
-                        <th>Funding</th>
-                        <th>Stage</th>
-                        <th>Category</th>
-                        <th>Location</th>
-                        <th>Founded</th>
-                        <th>Status</th>
+                        <td>
+                            <div class="company-name">${company.name}</div>
+                            <div class="company-tech">${company.tech.slice(0, 2).join(', ')}</div>
+                        </td>
+                        <td>${company.category}</td>
+                        <td><span class="funding-badge stage-${getStageClass(company.stage)}">${company.stage}</span></td>
+                        <td><strong>$${company.funding}M</strong></td>
+                        <td>${company.location}</td>
+                        <td>${company.founded}</td>
+                        <td>${company.employees}</td>
                     </tr>
-                </thead>
-                <tbody>
-                    ${companiesToShow.map(company => `
-                        <tr>
-                            <td>
-                                <div class="company-name">${company.name}</div>
-                                <div class="company-tech">${Array.isArray(company.tech) ? company.tech.slice(0, 2).join(', ') : company.tech || 'N/A'}</div>
-                            </td>
-                            <td class="company-funding">${company.funding ? '$' + company.funding + 'M' : 'N/A'}</td>
-                            <td><span class="company-stage ${getStageClass(company.stage)}">${company.stage || 'N/A'}</span></td>
-                            <td>${company.category || 'N/A'}</td>
-                            <td class="company-location">${company.location || company.country || 'N/A'}</td>
-                            <td>${company.founded || 'N/A'}</td>
-                            <td><span class="company-status ${getStatusClass(company.status)}">${company.status || 'Active'}</span></td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-        </div>
+                `).join('')}
+            </tbody>
+        </table>
     `;
 
     container.innerHTML = table;
+    updateResultsCounter(start + 1, Math.min(end, filteredCompanies.length), filteredCompanies.length);
     updatePagination();
 }
 
-// Get stage CSS class
 function getStageClass(stage) {
-    if (!stage) return '';
-    const stageClean = stage.toLowerCase().replace(/[^a-z0-9]/g, '-');
-    return 'stage-' + stageClean;
+    return stage.toLowerCase().replace(/\s+/g, '-').replace(/\+/g, '');
 }
 
-// Get status CSS class
-function getStatusClass(status) {
-    if (!status) return 'status-active';
-    return 'status-' + status.toLowerCase();
+function updateResultsCounter(start, end, total) {
+    const counter = document.getElementById('resultsCounter');
+    counter.textContent = `Showing ${start}-${end} of ${total} companies`;
 }
 
-// Update pagination controls
 function updatePagination() {
     const totalPages = Math.ceil(filteredCompanies.length / companiesPerPage);
+    const prevBtn = document.getElementById('prevPage');
+    const nextBtn = document.getElementById('nextPage');
+    const pageNumbersContainer = document.getElementById('pageNumbers');
 
     // Update button states
-    document.getElementById('firstPage').disabled = currentPage === 1;
-    document.getElementById('prevPage').disabled = currentPage === 1;
-    document.getElementById('nextPage').disabled = currentPage === totalPages || totalPages === 0;
-    document.getElementById('lastPage').disabled = currentPage === totalPages || totalPages === 0;
+    prevBtn.disabled = currentPage === 1;
+    nextBtn.disabled = currentPage === totalPages || totalPages === 0;
 
     // Generate page numbers
-    const pageNumbersContainer = document.getElementById('pageNumbers');
     pageNumbersContainer.innerHTML = '';
+    const maxPageNumbers = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxPageNumbers / 2));
+    let endPage = Math.min(totalPages, startPage + maxPageNumbers - 1);
 
-    if (totalPages <= 1) return;
-
-    const maxVisiblePages = 7;
-    let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-    if (endPage - startPage < maxVisiblePages - 1) {
-        startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    if (endPage - startPage < maxPageNumbers - 1) {
+        startPage = Math.max(1, endPage - maxPageNumbers + 1);
     }
 
-    // First page
-    if (startPage > 1) {
-        pageNumbersContainer.appendChild(createPageButton(1));
-        if (startPage > 2) {
-            pageNumbersContainer.appendChild(createEllipsis());
-        }
-    }
-
-    // Page numbers
     for (let i = startPage; i <= endPage; i++) {
-        pageNumbersContainer.appendChild(createPageButton(i));
-    }
-
-    // Last page
-    if (endPage < totalPages) {
-        if (endPage < totalPages - 1) {
-            pageNumbersContainer.appendChild(createEllipsis());
-        }
-        pageNumbersContainer.appendChild(createPageButton(totalPages));
+        const pageBtn = document.createElement('button');
+        pageBtn.className = 'page-number' + (i === currentPage ? ' active' : '');
+        pageBtn.textContent = i;
+        pageBtn.addEventListener('click', () => goToPage(i));
+        pageNumbersContainer.appendChild(pageBtn);
     }
 }
 
-// Create page button
-function createPageButton(pageNum) {
-    const button = document.createElement('div');
-    button.className = 'page-number' + (pageNum === currentPage ? ' active' : '');
-    button.textContent = pageNum;
-    button.addEventListener('click', () => goToPage(pageNum));
-    return button;
-}
-
-// Create ellipsis
-function createEllipsis() {
-    const ellipsis = document.createElement('div');
-    ellipsis.className = 'page-number ellipsis';
-    ellipsis.textContent = '...';
-    return ellipsis;
-}
-
-// Go to specific page
-function goToPage(pageNum) {
+function changePage(direction) {
     const totalPages = Math.ceil(filteredCompanies.length / companiesPerPage);
-    if (pageNum < 1 || pageNum > totalPages) return;
-    currentPage = pageNum;
+    const newPage = currentPage + direction;
+    if (newPage >= 1 && newPage <= totalPages) {
+        currentPage = newPage;
+        displayCompanies();
+        document.getElementById('companies').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+}
+
+function goToPage(page) {
+    currentPage = page;
     displayCompanies();
-    
-    // Scroll to companies section
     document.getElementById('companies').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// Technology Category Chart
+// Chart creation functions (keeping existing implementations)
 function createTechnologyCategoryChart() {
     const ctx = document.getElementById('techCategoryChart').getContext('2d');
-    
     const data = dashboardData ? dashboardData.technologies.categories : [];
 
     new Chart(ctx, {
@@ -339,8 +298,8 @@ function createTechnologyCategoryChart() {
             datasets: [{
                 data: data.map(item => item.value),
                 backgroundColor: [
-                    '#2c5f7c', '#3a8a5d', '#4a9f6e', '#5ab57f',
-                    '#6bc990', '#7edfa1', '#8fe5b2', '#a0efc3'
+                    '#0369a1', '#0891b2', '#06b6d4', '#22d3ee', '#67e8f9', '#a5f3fc',
+                    '#0284c7', '#0ea5e9', '#38bdf8', '#7dd3fc'
                 ],
                 borderWidth: 2,
                 borderColor: '#fff'
@@ -366,11 +325,9 @@ function createTechnologyCategoryChart() {
     });
 }
 
-// Geographic Distribution Chart
 function createGeographicDistributionChart() {
     const ctx = document.getElementById('geoDistributionChart').getContext('2d');
-    
-    const data = dashboardData ? dashboardData.geography.distribution.slice(0, 10) : [];
+    const data = dashboardData ? dashboardData.geography.distribution.filter(d => d.country !== 'Others') : [];
 
     new Chart(ctx, {
         type: 'bar',
@@ -379,8 +336,8 @@ function createGeographicDistributionChart() {
             datasets: [{
                 label: 'Number of Companies',
                 data: data.map(item => item.count),
-                backgroundColor: '#3a8a5d',
-                borderColor: '#2c5f7c',
+                backgroundColor: '#0891b2',
+                borderColor: '#0369a1',
                 borderWidth: 1
             }]
         },
@@ -404,24 +361,23 @@ function createGeographicDistributionChart() {
     });
 }
 
-// Funding Bubble Chart
 function createFundingBubbleChart() {
     const ctx = document.getElementById('fundingBubbleChart').getContext('2d');
-    
-    const companies = dashboardData ? dashboardData.companies.slice(0, 30) : [];
+    const companies = dashboardData ? dashboardData.companies.filter(c => c.lastRoundYear && c.funding > 0).slice(0, 30) : [];
 
     const stageColors = {
-        'Seed': '#7edfa1',
-        'Series A': '#6bc990',
-        'Series B': '#5ab57f',
-        'Series C': '#4a9f6e',
-        'Series D': '#3a8a5d',
-        'Series E': '#2c5f7c',
-        'Series F': '#1e4a5f',
-        'Series G': '#0f3442',
-        'Public': '#f39c12',
-        'Acquired': '#e74c3c',
-        'Corporate': '#3498db'
+        'Seed': '#a5f3fc',
+        'Series A': '#67e8f9',
+        'Series B': '#22d3ee',
+        'Series C': '#06b6d4',
+        'Series D': '#0891b2',
+        'Series E': '#0284c7',
+        'Series F': '#0369a1',
+        'Series G': '#075985',
+        'Series H': '#0c4a6e',
+        'Public': '#1e40af',
+        'Acquired': '#64748b',
+        'Corporate': '#475569'
     };
 
     const datasets = Object.keys(stageColors).map(stage => {
@@ -429,9 +385,9 @@ function createFundingBubbleChart() {
         return {
             label: stage,
             data: stageCompanies.map(c => ({
-                x: c.lastRoundYear || c.founded || 2020,
-                y: c.funding || 0,
-                r: Math.sqrt((c.funding || 0) * 10) / 3,
+                x: c.lastRoundYear,
+                y: c.funding,
+                r: Math.sqrt(c.funding) / 2,
                 company: c.name,
                 employees: c.employees
             })),
@@ -450,7 +406,7 @@ function createFundingBubbleChart() {
             plugins: {
                 legend: {
                     position: 'top',
-                    labels: { padding: 10, font: { size: 10 } }
+                    labels: { padding: 15, font: { size: 11 } }
                 },
                 tooltip: {
                     callbacks: {
@@ -460,7 +416,7 @@ function createFundingBubbleChart() {
                                 point.company,
                                 'Funding: $' + point.y + 'M',
                                 'Year: ' + point.x,
-                                'Employees: ' + (point.employees || 'N/A')
+                                'Employees: ' + point.employees
                             ];
                         }
                     }
@@ -469,7 +425,7 @@ function createFundingBubbleChart() {
             scales: {
                 x: {
                     title: { display: true, text: 'Year' },
-                    min: 2010,
+                    min: 2016,
                     max: 2024
                 },
                 y: {
@@ -481,10 +437,8 @@ function createFundingBubbleChart() {
     });
 }
 
-// Funding Trends Chart
 function createFundingTrendsChart() {
     const ctx = document.getElementById('fundingTrendsChart').getContext('2d');
-    
     const data = dashboardData ? dashboardData.funding.trends : [];
 
     new Chart(ctx, {
@@ -494,14 +448,14 @@ function createFundingTrendsChart() {
             datasets: [{
                 label: 'Total Funding ($M)',
                 data: data.map(item => item.amount),
-                borderColor: '#2c5f7c',
-                backgroundColor: 'rgba(44, 95, 124, 0.1)',
+                borderColor: '#0369a1',
+                backgroundColor: 'rgba(3, 105, 161, 0.1)',
                 borderWidth: 3,
                 fill: true,
                 tension: 0.4,
                 pointRadius: 5,
                 pointHoverRadius: 8,
-                pointBackgroundColor: '#2c5f7c',
+                pointBackgroundColor: '#0369a1',
                 pointBorderColor: '#fff',
                 pointBorderWidth: 2
             }]
@@ -520,17 +474,20 @@ function createFundingTrendsChart() {
                 }
             },
             scales: {
-                y: { beginAtZero: true, title: { display: true, text: 'Funding Amount ($M)' } },
-                x: { title: { display: true, text: 'Year' } }
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Funding Amount ($M)' }
+                },
+                x: {
+                    title: { display: true, text: 'Year' }
+                }
             }
         }
     });
 }
 
-// Funding by Stage Chart
 function createFundingStageChart() {
     const ctx = document.getElementById('fundingStageChart').getContext('2d');
-    
     const data = dashboardData ? dashboardData.funding.byStage : [];
 
     new Chart(ctx, {
@@ -541,8 +498,8 @@ function createFundingStageChart() {
                 label: 'Total Funding ($M)',
                 data: data.map(item => item.amount),
                 backgroundColor: [
-                    '#7edfa1', '#6bc990', '#5ab57f', '#4a9f6e',
-                    '#3a8a5d', '#2c5f7c', '#1e4a5f', '#0f3442'
+                    '#a5f3fc', '#67e8f9', '#22d3ee', '#06b6d4',
+                    '#0891b2', '#0284c7', '#0369a1', '#075985'
                 ],
                 borderWidth: 0
             }]
@@ -561,16 +518,17 @@ function createFundingStageChart() {
                 }
             },
             scales: {
-                y: { beginAtZero: true, title: { display: true, text: 'Total Funding ($M)' } }
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Total Funding ($M)' }
+                }
             }
         }
     });
 }
 
-// Quarterly Funding Chart
 function createQuarterlyFundingChart() {
     const ctx = document.getElementById('quarterlyFundingChart').getContext('2d');
-    
     const data = dashboardData ? dashboardData.funding.quarterly : [];
 
     new Chart(ctx, {
@@ -581,8 +539,8 @@ function createQuarterlyFundingChart() {
                 {
                     label: 'Funding Amount ($M)',
                     data: data.map(item => item.amount),
-                    borderColor: '#2c5f7c',
-                    backgroundColor: 'rgba(44, 95, 124, 0.1)',
+                    borderColor: '#0369a1',
+                    backgroundColor: 'rgba(3, 105, 161, 0.1)',
                     yAxisID: 'y',
                     borderWidth: 2,
                     tension: 0.4
@@ -590,8 +548,8 @@ function createQuarterlyFundingChart() {
                 {
                     label: 'Number of Deals',
                     data: data.map(item => item.deals),
-                    borderColor: '#3a8a5d',
-                    backgroundColor: 'rgba(58, 138, 93, 0.1)',
+                    borderColor: '#0891b2',
+                    backgroundColor: 'rgba(8, 145, 178, 0.1)',
                     yAxisID: 'y1',
                     borderWidth: 2,
                     tension: 0.4
@@ -601,8 +559,13 @@ function createQuarterlyFundingChart() {
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            interaction: { mode: 'index', intersect: false },
-            plugins: { legend: { display: true } },
+            interaction: {
+                mode: 'index',
+                intersect: false
+            },
+            plugins: {
+                legend: { display: true }
+            },
             scales: {
                 y: {
                     type: 'linear',
@@ -622,10 +585,8 @@ function createQuarterlyFundingChart() {
     });
 }
 
-// GitHub Repos Chart
 function createGitHubReposChart() {
     const ctx = document.getElementById('githubReposChart').getContext('2d');
-    
     const data = dashboardData ? dashboardData.github.topRepos : [];
 
     new Chart(ctx, {
@@ -636,13 +597,13 @@ function createGitHubReposChart() {
                 {
                     label: 'Stars',
                     data: data.map(item => item.stars),
-                    backgroundColor: '#2c5f7c',
+                    backgroundColor: '#0369a1',
                     borderWidth: 0
                 },
                 {
                     label: 'Forks',
                     data: data.map(item => item.forks),
-                    backgroundColor: '#3a8a5d',
+                    backgroundColor: '#0891b2',
                     borderWidth: 0
                 }
             ]
@@ -651,16 +612,18 @@ function createGitHubReposChart() {
             indexAxis: 'y',
             responsive: true,
             maintainAspectRatio: true,
-            plugins: { legend: { display: true } },
-            scales: { x: { beginAtZero: true } }
+            plugins: {
+                legend: { display: true }
+            },
+            scales: {
+                x: { beginAtZero: true }
+            }
         }
     });
 }
 
-// Patent Category Chart
 function createPatentCategoryChart() {
     const ctx = document.getElementById('patentCategoryChart').getContext('2d');
-    
     const data = dashboardData ? dashboardData.patents.byCategory : [];
 
     new Chart(ctx, {
@@ -670,18 +633,28 @@ function createPatentCategoryChart() {
             datasets: [{
                 label: 'Number of Patents',
                 data: data.map(item => item.count),
-                backgroundColor: '#3a8a5d',
-                borderColor: '#2c5f7c',
+                backgroundColor: '#0891b2',
+                borderColor: '#0369a1',
                 borderWidth: 1
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: true,
-            plugins: { legend: { display: false } },
+            plugins: {
+                legend: { display: false }
+            },
             scales: {
-                y: { beginAtZero: true, title: { display: true, text: 'Number of Patents' } },
-                x: { ticks: { maxRotation: 45, minRotation: 45 } }
+                y: {
+                    beginAtZero: true,
+                    title: { display: true, text: 'Number of Patents' }
+                },
+                x: {
+                    ticks: {
+                        maxRotation: 45,
+                        minRotation: 45
+                    }
+                }
             }
         }
     });
@@ -696,6 +669,7 @@ window.addEventListener('scroll', () => {
     
     sections.forEach(section => {
         const sectionTop = section.offsetTop;
+        const sectionHeight = section.clientHeight;
         if (window.pageYOffset >= sectionTop - 100) {
             currentSection = section.getAttribute('id');
         }
@@ -704,7 +678,7 @@ window.addEventListener('scroll', () => {
     navLinks.forEach(link => {
         link.style.borderBottomColor = 'transparent';
         if (link.getAttribute('href') === '#' + currentSection) {
-            link.style.borderBottomColor = '#3a8a5d';
+            link.style.borderBottomColor = '#0284c7';
         }
     });
 });
