@@ -1,0 +1,121 @@
+{
+  "overview": {
+    "totalCompanies": 63,
+    "marketSize": "30B",
+    "githubRepos": 96,
+    "totalFunding": "12.4B",
+    "lastUpdated": "2026-01-12"
+  },
+  "technologies": {
+    "categories": [
+      { "name": "AI & Machine Learning", "value": 24, "description": "Computer vision, predictive analytics, crop disease detection" },
+      { "name": "Precision Agriculture", "value": 18, "description": "IoT sensors, drone monitoring, satellite imaging" },
+      { "name": "Crop Management", "value": 16, "description": "Smart irrigation, soil analysis, pest control" },
+      { "name": "Data Analytics", "value": 15, "description": "Farm management software, supply chain optimization" },
+      { "name": "Farm Automation", "value": 12, "description": "Autonomous tractors, robotic harvesting" },
+      { "name": "Biotechnology", "value": 10, "description": "Gene editing, plant breeding, microbial solutions" }
+    ]
+  },
+  "geography": {
+    "distribution": [
+      { "country": "United States", "count": 28, "percentage": 44.4 },
+      { "country": "India", "count": 12, "percentage": 19.0 },
+      { "country": "Israel", "count": 8, "percentage": 12.7 },
+      { "country": "Netherlands", "count": 6, "percentage": 9.5 },
+      { "country": "Germany", "count": 5, "percentage": 7.9 },
+      { "country": "Others", "count": 4, "percentage": 6.3 }
+    ]
+  },
+  "companies": [
+    { "name": "Indigo Agriculture", "funding": 1200, "stage": "Series F", "year": 2021, "employees": 850, "location": "USA", "tech": "Microbial Seed Treatments", "founded": 2014 },
+    { "name": "Plenty", "funding": 940, "stage": "Series E", "year": 2022, "employees": 500, "location": "USA", "tech": "Vertical Farming", "founded": 2014 },
+    { "name": "Farmers Business Network", "funding": 890, "stage": "Series G", "year": 2021, "employees": 600, "location": "USA", "tech": "Data Analytics", "founded": 2014 },
+    { "name": "Bowery Farming", "funding": 647, "stage": "Series C", "year": 2021, "employees": 400, "location": "USA", "tech": "Indoor Farming", "founded": 2015 },
+    { "name": "Pivot Bio", "funding": 566, "stage": "Series D", "year": 2022, "employees": 350, "location": "USA", "tech": "Nitrogen Fixation", "founded": 2011 },
+    { "name": "eFishery", "funding": 200, "stage": "Series C", "year": 2022, "employees": 250, "location": "Indonesia", "tech": "Aquaculture Automation", "founded": 2013 },
+    { "name": "Trace Genomics", "funding": 185, "stage": "Series C", "year": 2023, "employees": 150, "location": "USA", "tech": "Soil Testing", "founded": 2015 },
+    { "name": "Taranis", "funding": 150, "stage": "Series C", "year": 2021, "employees": 200, "location": "Israel", "tech": "AI Crop Intelligence", "founded": 2015 },
+    { "name": "CropX", "funding": 135, "stage": "Series C", "year": 2022, "employees": 120, "location": "Israel", "tech": "Soil Sensors", "founded": 2015 },
+    { "name": "AgroStar", "funding": 127, "stage": "Series D", "year": 2022, "employees": 300, "location": "India", "tech": "AgTech Marketplace", "founded": 2013 },
+    { "name": "Granular", "funding": 110, "stage": "Acquired", "year": 2017, "employees": 200, "location": "USA", "tech": "Farm Management Software", "founded": 2014 },
+    { "name": "Blue River Technology", "funding": 92, "stage": "Acquired", "year": 2017, "employees": 150, "location": "USA", "tech": "Computer Vision & Robotics", "founded": 2011 },
+    { "name": "AgShift", "funding": 28, "stage": "Series B", "year": 2023, "employees": 80, "location": "USA", "tech": "Quality Assessment AI", "founded": 2016 },
+    { "name": "FarmLogs", "funding": 24, "stage": "Series B", "year": 2020, "employees": 60, "location": "USA", "tech": "Farm Management", "founded": 2011 },
+    { "name": "OneSoil", "funding": 15, "stage": "Series A", "year": 2023, "employees": 45, "location": "Belarus", "tech": "Satellite Field Monitoring", "founded": 2017 }
+  ],
+  "funding": {
+    "trends": [
+      { "year": "2018", "amount": 2100, "deals": 89 },
+      { "year": "2019", "amount": 2850, "deals": 112 },
+      { "year": "2020", "amount": 3400, "deals": 134 },
+      { "year": "2021", "amount": 5200, "deals": 178 },
+      { "year": "2022", "amount": 4100, "deals": 156 },
+      { "year": "2023", "amount": 3800, "deals": 142 },
+      { "year": "2024", "amount": 4500, "deals": 165 },
+      { "year": "2025", "amount": 5100, "deals": 189 }
+    ],
+    "byStage": [
+      { "stage": "Seed", "amount": 245, "deals": 45 },
+      { "stage": "Series A", "amount": 680, "deals": 38 },
+      { "stage": "Series B", "amount": 1250, "deals": 32 },
+      { "stage": "Series C", "amount": 2100, "deals": 28 },
+      { "stage": "Series D+", "amount": 3850, "deals": 22 },
+      { "stage": "Acquired", "amount": 4300, "deals": 18 }
+    ],
+    "quarterly": [
+      { "quarter": "Q1 2024", "amount": 950, "deals": 23 },
+      { "quarter": "Q2 2024", "amount": 1100, "deals": 28 },
+      { "quarter": "Q3 2024", "amount": 1250, "deals": 31 },
+      { "quarter": "Q4 2024", "amount": 1200, "deals": 27 },
+      { "quarter": "Q1 2025", "amount": 1350, "deals": 34 }
+    ]
+  },
+  "github": {
+    "totalRepos": 96,
+    "totalStars": 15200,
+    "totalForks": 3800,
+    "activeContributors": 2100,
+    "recentCommits": 892,
+    "topRepos": [
+      { "name": "farmOS", "stars": 2800, "forks": 680, "language": "PHP", "description": "Farm management platform" },
+      { "name": "OpenAg-Brain", "stars": 1950, "forks": 420, "language": "Python", "description": "Controlled environment agriculture" },
+      { "name": "AgDataCommons", "stars": 1650, "forks": 380, "language": "JavaScript", "description": "Agricultural data platform" },
+      { "name": "CropAnalyzer", "stars": 1420, "forks": 290, "language": "Python", "description": "Crop health analysis using ML" },
+      { "name": "SmartFarm-AI", "stars": 1280, "forks": 315, "language": "Python", "description": "AI-powered farm automation" },
+      { "name": "AgroML", "stars": 1150, "forks": 265, "language": "Python", "description": "Machine learning for agriculture" },
+      { "name": "PrecisionAg", "stars": 980, "forks": 210, "language": "JavaScript", "description": "Precision agriculture toolkit" },
+      { "name": "FarmBot-OS", "stars": 890, "forks": 195, "language": "C++", "description": "Open-source farming robot" },
+      { "name": "CropVision", "stars": 750, "forks": 165, "language": "Python", "description": "Computer vision for crops" },
+      { "name": "SoilSense", "stars": 620, "forks": 140, "language": "Python", "description": "Soil analysis platform" }
+    ]
+  },
+  "patents": {
+    "total": 1247,
+    "yoyGrowth": 23,
+    "filed2025": 342,
+    "countries": 18,
+    "byCategory": [
+      { "category": "AI/ML Applications", "count": 342 },
+      { "category": "Sensor Technology", "count": 285 },
+      { "category": "Automation Systems", "count": 218 },
+      { "category": "Data Analytics", "count": 196 },
+      { "category": "Biotechnology", "count": 156 },
+      { "category": "IoT Devices", "count": 145 },
+      { "category": "Robotics", "count": 128 },
+      { "category": "Imaging Systems", "count": 98 }
+    ],
+    "topOrganizations": [
+      { "org": "John Deere", "patents": 142 },
+      { "org": "Bayer CropScience", "patents": 98 },
+      { "org": "Monsanto", "patents": 87 },
+      { "org": "CNH Industrial", "patents": 76 },
+      { "org": "Trimble", "patents": 65 }
+    ]
+  },
+  "metadata": {
+    "dataSource": "Notion AgTech Database Extraction",
+    "lastUpdated": "2026-01-12T02:06:00Z",
+    "version": "1.0",
+    "coverage": "Global AgTech market with focus on AI and automation"
+  }
+}

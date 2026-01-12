@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgTech AI Intelligence Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>🌾 AgTech AI Intelligence Dashboard</h1>
+            <p class="subtitle">Comprehensive Agricultural Technology Market Intelligence & Innovation Tracking</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="container">
+            <ul>
+                <li><a href="#overview" class="nav-link">Overview</a></li>
+                <li><a href="#companies" class="nav-link">Companies</a></li>
+                <li><a href="#technologies" class="nav-link">Technologies</a></li>
+                <li><a href="#funding" class="nav-link">Funding</a></li>
+                <li><a href="#github" class="nav-link">GitHub Activity</a></li>
+                <li><a href="#patents" class="nav-link">Patents</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Overview Section -->
+        <section id="overview" class="section">
+            <div class="container">
+                <h2>Market Overview</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">🏢</div>
+                        <div class="metric-value" id="companiesCount">63+</div>
+                        <div class="metric-label">Companies Tracked</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">💰</div>
+                        <div class="metric-value" id="marketSize">$30B</div>
+                        <div class="metric-label">Market Size</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">💻</div>
+                        <div class="metric-value" id="githubRepos">96</div>
+                        <div class="metric-label">GitHub Repositories</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📊</div>
+                        <div class="metric-value" id="totalFunding">$12.4B</div>
+                        <div class="metric-label">Total Funding</div>
+                    </div>
+                </div>
+
+                <div class="chart-grid">
+                    <div class="chart-container">
+                        <h3>Technology Category Distribution</h3>
+                        <canvas id="techCategoryChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Geographic Distribution</h3>
+                        <canvas id="geoDistributionChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Companies Section -->
+        <section id="companies" class="section section-alt">
+            <div class="container">
+                <h2>Company Landscape</h2>
+                <div class="chart-container-full">
+                    <h3>Company Funding Analysis (Bubble Chart)</h3>
+                    <p class="chart-description">Size represents total funding amount, color represents funding stage</p>
+                    <canvas id="fundingBubbleChart"></canvas>
+                </div>
+
+                <div class="company-table-container">
+                    <h3>Top Companies by Funding</h3>
+                    <div id="companyTable"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technologies Section -->
+        <section id="technologies" class="section">
+            <div class="container">
+                <h2>Technology Focus Areas</h2>
+                <div class="tech-categories">
+                    <div class="tech-card">
+                        <h4>🤖 AI & Machine Learning</h4>
+                        <p>Computer vision, predictive analytics, crop disease detection, yield prediction</p>
+                        <span class="tech-count">24 companies</span>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🛰️ Precision Agriculture</h4>
+                        <p>IoT sensors, drone monitoring, satellite imaging, field mapping</p>
+                        <span class="tech-count">18 companies</span>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🌱 Crop Management</h4>
+                        <p>Smart irrigation, soil analysis, pest control, fertilizer optimization</p>
+                        <span class="tech-count">16 companies</span>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🚜 Farm Automation</h4>
+                        <p>Autonomous tractors, robotic harvesting, automated logistics</p>
+                        <span class="tech-count">12 companies</span>
+                    </div>
+                    <div class="tech-card">
+                        <h4>📊 Data Analytics</h4>
+                        <p>Farm management software, supply chain optimization, market intelligence</p>
+                        <span class="tech-count">15 companies</span>
+                    </div>
+                    <div class="tech-card">
+                        <h4>🔬 Biotechnology</h4>
+                        <p>Gene editing, plant breeding, microbial solutions, synthetic biology</p>
+                        <span class="tech-count">10 companies</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Funding Section -->
+        <section id="funding" class="section section-alt">
+            <div class="container">
+                <h2>Funding Trends & Analysis</h2>
+                <div class="chart-container-full">
+                    <h3>Funding Trends Over Time</h3>
+                    <canvas id="fundingTrendsChart"></canvas>
+                </div>
+
+                <div class="chart-grid">
+                    <div class="chart-container">
+                        <h3>Funding by Stage</h3>
+                        <canvas id="fundingStageChart"></canvas>
+                    </div>
+                    <div class="chart-container">
+                        <h3>Investment Activity by Quarter</h3>
+                        <canvas id="quarterlyFundingChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- GitHub Activity Section -->
+        <section id="github" class="section">
+            <div class="container">
+                <h2>Open Source & Development Activity</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">⭐</div>
+                        <div class="metric-value">15.2K</div>
+                        <div class="metric-label">Total Stars</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🔱</div>
+                        <div class="metric-value">3.8K</div>
+                        <div class="metric-label">Total Forks</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📝</div>
+                        <div class="metric-value">2.1K</div>
+                        <div class="metric-label">Active Contributors</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🔄</div>
+                        <div class="metric-value">892</div>
+                        <div class="metric-label">Recent Commits</div>
+                    </div>
+                </div>
+
+                <div class="chart-container-full">
+                    <h3>Most Popular AgTech Repositories</h3>
+                    <canvas id="githubReposChart"></canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- Patents Section -->
+        <section id="patents" class="section section-alt">
+            <div class="container">
+                <h2>Innovation & Patent Activity</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-icon">📜</div>
+                        <div class="metric-value">1,247</div>
+                        <div class="metric-label">Total Patents</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">📈</div>
+                        <div class="metric-value">+23%</div>
+                        <div class="metric-label">YoY Growth</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🏆</div>
+                        <div class="metric-value">342</div>
+                        <div class="metric-label">Filed in 2025</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-icon">🌍</div>
+                        <div class="metric-value">18</div>
+                        <div class="metric-label">Countries</div>
+                    </div>
+                </div>
+
+                <div class="chart-container-full">
+                    <h3>Patent Filings by Technology Category</h3>
+                    <canvas id="patentCategoryChart"></canvas>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 AgTech AI Intelligence Dashboard. Data updated: January 2026</p>
+            <p>Comprehensive market intelligence for agricultural technology innovation</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
